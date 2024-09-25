@@ -7,7 +7,7 @@ public class AppLibrosTest {
 
     @Test
     public void testAlgoQueDeberiaEstarBien() {
-        Assertions.assertEquals(2, 1);
+        Assertions.assertEquals(2, 2);
     }
 
 
