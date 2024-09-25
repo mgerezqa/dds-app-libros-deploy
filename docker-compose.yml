@@ -9,11 +9,13 @@ services:
     environment:
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: dblibros
+      POSTGRES_HOST_AUTH_METHOD: "trust"
     volumes:
     - ./posgresdb:/var/lib/postgresql/data
 
   app:
-    image: ddsdeploy
+#    image: ddsdeploy
+    image: dds-app-libros-deploy
     restart: always
     ports:
       - 8080:8080
