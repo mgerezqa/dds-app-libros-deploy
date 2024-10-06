@@ -11,4 +11,9 @@ public class AppLibrosTest {
     }
 
 
+    @Test
+    public void testAlgoQueTambienDeberiaEstarBien() {
+        Assertions.assertEquals(2, 2);
+    }
+
 }
