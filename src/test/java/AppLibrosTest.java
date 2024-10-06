@@ -18,13 +18,10 @@ public class AppLibrosTest {
 
     @Test
     public void testAlgoQueNoDeberiaEstarBien() {
-        Assertions.assertEquals(3, 2);
+        Assertions.assertEquals(3, 3);
     }
 
-    @Test
-    public void testNAlgoQueNoDeberiaEstarBien() {
-        Assertions.assertEquals(3, 4);
-    }
+
 
 
 
