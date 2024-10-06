@@ -26,10 +26,7 @@ public class AppLibrosTest {
         Assertions.assertEquals(3, 4);
     }
 
-    @Test
-    public void fallPorFavor() {
-        Assertions.assertEquals(4, 4);
-    }
+
 
 
 }
