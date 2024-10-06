@@ -16,4 +16,9 @@ public class AppLibrosTest {
         Assertions.assertEquals(2, 2);
     }
 
+    @Test
+    public void testAlgoQueNoDeberiaEstarBien() {
+        Assertions.assertEquals(3, 2);
+    }
+
 }
