@@ -14,7 +14,7 @@ pipeline {
         SONAR_PASSWORD = 'sonar2024'
         SONAR_TOKEN = 'squ_a7527e83837cbf2cdadd75919d6ee3d7befd320a'
         // Variable para controlar qué etapas se ejecutan
-        STAGE_TO_RUN = 'DEPLOY' // Cambia a 'CHECKOUT', 'DEPENDENCIES', 'TEST', 'SCAN', 'BUILD' según lo que quieras probar
+        STAGE_TO_RUN = 'ALL' // Cambia a 'CHECKOUT', 'DEPENDENCIES', 'TEST', 'SCAN', 'BUILD' según lo que quieras probar
     }
 
     stages {
