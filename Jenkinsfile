@@ -60,7 +60,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Construyendo la imagen Docker...'
-                sh "docker build -t ${REGISTRY}:${BUILD_NUMBER} ./${PROJECT_ROOT}"
+                sh "docker build -t ${REGISTRY}:${BUILD_NUMBER} ./"
             }
         }
 
