@@ -12,7 +12,7 @@ pipeline {
         SONARQUBE_URL = 'http://192.168.68.10:9000'
         SONAR_LOGIN = 'admin'
         SONAR_PASSWORD = 'sonar2024'
-
+        SONAR_TOKEN = 'squ_a7527e83837cbf2cdadd75919d6ee3d7befd320a'
         // Variable para controlar qué etapas se ejecutan
         STAGE_TO_RUN = 'SCAN' // Cambia a 'CHECKOUT', 'DEPENDENCIES', 'TEST', 'SCAN', 'BUILD' según lo que quieras probar
     }
@@ -69,18 +69,8 @@ pipeline {
             steps {
                 echo 'Escaneando el código con SonarQube...'
                 withSonarQubeEnv('sonarqube') {
-                    sh """
-                        ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=dds-app-libros-deploy \
-                        -Dsonar.projectName=dds-app-libros-deploy \
-                        -Dsonar.projectVersion=0.0.${BUILD_NUMBER} \
-                        -Dsonar.host.url=${SONARQUBE_URL} \
-                        -Dsonar.sources=./${PROJECT_ROOT} \
-                        -Dsonar.login=${SONAR_LOGIN} \
-                        -Dsonar.password=${SONAR_PASSWORD} \
-                        -Dsonar.tests=./${PROJECT_ROOT}/test \
-                        -Dsonar.java.binaries=./${PROJECT_ROOT}/target/classes
-                    """
+                      sh "mvn sonar:sonar -Dsonar.projectKey=dds-app-libros-deploy -Pcoverage"
+
                 }
             }
         }
