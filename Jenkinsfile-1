@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    tools{
+    tools {
         maven "MAVEN_HOME"
     }
 
@@ -10,8 +10,6 @@ pipeline {
         EMAIL_ADDRESS = 'mingerez@gmail.com'
         REGISTRY = 'mgerez/ddsdeploy'
         SONARQUBE_URL = 'http://192.168.68.10:9000'
-        SONAR_LOGIN = 'admin'
-        SONAR_PASSWORD = 'sonar2024'
         SONAR_TOKEN = 'squ_a7527e83837cbf2cdadd75919d6ee3d7befd320a'
         // Variable para controlar qué etapas se ejecutan
         STAGE_TO_RUN = 'ALL' // Cambia a 'CHECKOUT', 'DEPENDENCIES', 'TEST', 'SCAN', 'BUILD' según lo que quieras probar
@@ -19,24 +17,13 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            when {
-                anyOf {
-                    environment name: 'STAGE_TO_RUN', value: 'CHECKOUT'
-                    environment name: 'STAGE_TO_RUN', value: 'ALL'
-                }
-            }
             steps {
+                echo 'Realizando checkout del repositorio...'
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mgerezqa/dds-app-libros-deploy.git']]])
             }
         }
 
         stage('Dependencies') {
-            when {
-                anyOf {
-                    environment name: 'STAGE_TO_RUN', value: 'DEPENDENCIES'
-                    environment name: 'STAGE_TO_RUN', value: 'ALL'
-                }
-            }
             steps {
                 echo 'Instalando dependencias...'
                 sh "mvn install -DskipTests"
@@ -44,12 +31,6 @@ pipeline {
         }
 
         stage('Test') {
-            when {
-                anyOf {
-                    environment name: 'STAGE_TO_RUN', value: 'TEST'
-                    environment name: 'STAGE_TO_RUN', value: 'ALL'
-                }
-            }
             steps {
                 echo 'Ejecutando los tests...'
                 sh "mvn test"
@@ -57,60 +38,36 @@ pipeline {
         }
 
         stage('SonarQube Scan') {
-            when {
-                anyOf {
-                    environment name: 'STAGE_TO_RUN', value: 'SCAN'
-                    environment name: 'STAGE_TO_RUN', value: 'ALL'
-                }
-            }
             environment {
                 scannerHome = tool 'sonar-scanner'
             }
             steps {
                 echo 'Escaneando el código con SonarQube...'
                 withSonarQubeEnv('sonarqube') {
-                      sh "mvn sonar:sonar -Dsonar.projectKey=dds-app-libros-deploy -Pcoverage"
-
+                    sh "mvn sonar:sonar -Dsonar.projectKey=dds-app-libros-deploy -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONAR_TOKEN} -Pcoverage"
                 }
             }
         }
 
         stage('Build Docker Image') {
-            when {
-                anyOf {
-                    environment name: 'STAGE_TO_RUN', value: 'BUILD'
-                    environment name: 'STAGE_TO_RUN', value: 'ALL'
-                }
-            }
             steps {
                 echo 'Construyendo la imagen Docker...'
-                sh "docker build -t ${REGISTRY}:latest . "
+                sh "docker build -t ${REGISTRY}:latest ."
             }
         }
 
         stage('Deploy Docker Image') {
-              when {
-                  anyOf {
-                      environment name: 'STAGE_TO_RUN', value: 'DEPLOY'
-                      environment name: 'STAGE_TO_RUN', value: 'ALL'
-                  }
-              }
-              steps {
-                  echo 'Subiendo la imagen a Docker Hub...'
+            steps {
+                echo 'Subiendo la imagen a Docker Hub...'
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    // Iniciar sesión en Docker con credenciales enmascaradas
+                    sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}"
 
-                  // Uso de credenciales de Docker almacenadas en Jenkins
-                  withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials',
-                                                    usernameVariable: 'DOCKER_USER',
-                                                    passwordVariable: 'DOCKER_PASSWORD')])
-                       {
-                      // Iniciar sesión en Docker con credenciales enmascaradas
-                      sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}"
-
-                      // Subir la imagen a Docker Hub
-                      sh "docker push ${REGISTRY}:latest"
-                  }
-              }
-          }
+                    // Subir la imagen a Docker Hub
+                    sh "docker push ${REGISTRY}:latest"
+                }
+            }
+        }
     }
 
     post {
