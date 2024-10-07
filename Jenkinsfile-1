@@ -84,7 +84,7 @@ pipeline {
             }
             steps {
                 echo 'Construyendo la imagen Docker...'
-                sh "docker build -t ${REGISTRY}:${BUILD_NUMBER} . "
+                sh "docker build -t ${REGISTRY}:latest . "
             }
         }
 
@@ -101,12 +101,13 @@ pipeline {
                   // Uso de credenciales de Docker almacenadas en Jenkins
                   withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials',
                                                     usernameVariable: 'DOCKER_USER',
-                                                    passwordVariable: 'DOCKER_PASSWORD')]) {
+                                                    passwordVariable: 'DOCKER_PASSWORD')])
+                       {
                       // Iniciar sesión en Docker con credenciales enmascaradas
                       sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}"
 
                       // Subir la imagen a Docker Hub
-                      sh "docker push ${REGISTRY}:${BUILD_NUMBER}"
+                      sh "docker push ${REGISTRY}:latest"
                   }
               }
           }
