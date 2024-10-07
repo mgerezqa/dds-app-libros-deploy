@@ -2,24 +2,37 @@ pipeline {
     agent any
 
     environment {
-        // General Variables for Pipeline
         PROJECT_ROOT = 'src'
         EMAIL_ADDRESS = 'mingerez@gmail.com'
         REGISTRY = 'mgerez/ddsdeploy'
-        SONARQUBE_URL = 'http://192.168.68.10:9000'  // URL de tu SonarQube
-        SONAR_LOGIN = 'admin'  // Usuario de SonarQube
-        SONAR_PASSWORD = 'sonar2024'  // Contraseña de SonarQube
+        SONARQUBE_URL = 'http://192.168.68.10:9000'
+        SONAR_LOGIN = 'admin'
+        SONAR_PASSWORD = 'sonar2024'
+
+        // Variable para controlar qué etapas se ejecutan
+        STAGE_TO_RUN = 'DEPENDENCIES' // Cambia a 'CHECKOUT', 'DEPENDENCIES', 'TEST', 'SCAN', 'BUILD' según lo que quieras probar
     }
 
     stages {
         stage('Checkout') {
+            when {
+                anyOf {
+                    environment name: 'STAGE_TO_RUN', value: 'CHECKOUT'
+                    environment name: 'STAGE_TO_RUN', value: 'ALL'
+                }
+            }
             steps {
-                // Obtener el código fuente desde el repositorio GitHub
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mgerezqa/dds-app-libros-deploy.git']]])
             }
         }
 
         stage('Dependencies') {
+            when {
+                anyOf {
+                    environment name: 'STAGE_TO_RUN', value: 'DEPENDENCIES'
+                    environment name: 'STAGE_TO_RUN', value: 'ALL'
+                }
+            }
             steps {
                 echo 'Instalando dependencias...'
                 sh "mvn install -DskipTests"
@@ -27,20 +40,31 @@ pipeline {
         }
 
         stage('Test') {
+            when {
+                anyOf {
+                    environment name: 'STAGE_TO_RUN', value: 'TEST'
+                    environment name: 'STAGE_TO_RUN', value: 'ALL'
+                }
+            }
             steps {
                 echo 'Ejecutando los tests...'
-                // Correr los tests con JUnit y Maven
                 sh "mvn test"
             }
         }
 
         stage('SonarQube Scan') {
+            when {
+                anyOf {
+                    environment name: 'STAGE_TO_RUN', value: 'SCAN'
+                    environment name: 'STAGE_TO_RUN', value: 'ALL'
+                }
+            }
             environment {
-                scannerHome = tool 'sonar-scanner'  // Nombre configurado en Jenkins para Sonar Scanner
+                scannerHome = tool 'sonar-scanner'
             }
             steps {
                 echo 'Escaneando el código con SonarQube...'
-                withSonarQubeEnv('sonarqube') { // Usar el entorno configurado para SonarQube
+                withSonarQubeEnv('sonarqube') {
                     sh """
                         ${scannerHome}/bin/sonar-scanner \
                         -Dsonar.projectKey=dds-app-libros-deploy \
@@ -58,6 +82,12 @@ pipeline {
         }
 
         stage('Build Docker Image') {
+            when {
+                anyOf {
+                    environment name: 'STAGE_TO_RUN', value: 'BUILD'
+                    environment name: 'STAGE_TO_RUN', value: 'ALL'
+                }
+            }
             steps {
                 echo 'Construyendo la imagen Docker...'
                 sh "docker build -t ${REGISTRY}:${BUILD_NUMBER} ./${PROJECT_ROOT}"
@@ -65,6 +95,12 @@ pipeline {
         }
 
         stage('Deploy Docker Image') {
+            when {
+                anyOf {
+                    environment name: 'STAGE_TO_RUN', value: 'DEPLOY'
+                    environment name: 'STAGE_TO_RUN', value: 'ALL'
+                }
+            }
             steps {
                 echo 'Subiendo la imagen a Docker Hub...'
                 sh "docker login -u <tu-usuario> -p <tu-password>"
@@ -76,7 +112,6 @@ pipeline {
     post {
         success {
             echo 'Pipeline ejecutado correctamente.'
-            // Puedes agregar notificaciones por email aquí si lo necesitas
         }
         failure {
             echo 'Pipeline fallido.'
