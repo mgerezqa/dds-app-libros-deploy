@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools{
+        maven "MAVEN_HOME"
+    }
+
     environment {
         PROJECT_ROOT = 'src'
         EMAIL_ADDRESS = 'mingerez@gmail.com'
