@@ -14,7 +14,7 @@ pipeline {
         SONAR_PASSWORD = 'sonar2024'
         SONAR_TOKEN = 'squ_a7527e83837cbf2cdadd75919d6ee3d7befd320a'
         // Variable para controlar qué etapas se ejecutan
-        STAGE_TO_RUN = 'BUILD' // Cambia a 'CHECKOUT', 'DEPENDENCIES', 'TEST', 'SCAN', 'BUILD' según lo que quieras probar
+        STAGE_TO_RUN = 'DEPLOY' // Cambia a 'CHECKOUT', 'DEPENDENCIES', 'TEST', 'SCAN', 'BUILD' según lo que quieras probar
     }
 
     stages {
@@ -96,10 +96,20 @@ pipeline {
                 }
             }
             steps {
-                echo 'Subiendo la imagen a Docker Hub...'
-                sh "docker login -u <tu-usuario> -p <tu-password>"
-                sh "docker push ${REGISTRY}:${BUILD_NUMBER}"
-            }
+                    echo 'Subiendo la imagen a Docker Hub...'
+
+                    // Uso de credenciales de Docker almacenadas en Jenkins
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials',
+                                                      usernameVariable: 'DOCKER_USER',
+                                                      passwordVariable: 'DOCKER_PASSWORD')]) {
+                        // Iniciar sesión en Docker con credenciales enmascaradas
+                        sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}"
+
+                        // Subir la imagen a Docker Hub
+                        sh "docker push ${REGISTRY}:${BUILD_NUMBER}"
+                    }
+
+
         }
     }
 
