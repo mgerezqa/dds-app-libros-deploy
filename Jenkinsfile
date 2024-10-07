@@ -60,6 +60,10 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Construyendo la imagen Docker...'
+                // Imprimir el directorio actual (opcional, para depuración)
+                sh 'pwd'
+                // Moverte explícitamente a la raíz del proyecto (si es necesario)
+                sh "cd ${WORKSPACE}"
                 sh "docker build -t ${REGISTRY}:${BUILD_NUMBER} ."
             }
         }
