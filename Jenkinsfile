@@ -32,12 +32,27 @@ pipeline {
 
         stage('Test') {
             steps {
-                    script {
-                            echo 'Ejecutando los tests...'
-                            sh "mvn test"
-                    }
+                script {
+                    echo 'Ejecutando los tests...'
+                    sh "mvn test"
+                    // Generar reportes de Surefire en HTML
+                    sh "mvn surefire-report:report"
+                    // Generar reportes de Jacoco
+                    sh "mvn jacoco:report"
+                }
             }
         }
+
+        stage('Archive Reports') {
+            steps {
+                script {
+                    echo 'Archivando reportes...'
+                    archiveArtifacts artifacts: '**/target/surefire-reports/*.html, **/target/site/jacoco/*.html', allowEmptyArchive: true
+                }
+            }
+        }
+
+
 
         stage('SonarQube Scan') {
             environment {
@@ -52,7 +67,7 @@ pipeline {
                         string(credentialsId: 'sonar-token-credential-jenkinsfile', variable: 'SONAR_TOKEN')
                     ]) {
                         withSonarQubeEnv('sonarqube') {
-                            sh "mvn sonar:sonar -Dsonar.projectKey=dds-app-libros-deploy -Dsonar.host.url='SONARQUBE_URL' -Dsonar.login='SONAR_TOKEN' -Pcoverage"
+                            sh "mvn sonar:sonar -Dsonar.projectKey=dds-app-libros-deploy -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONAR_TOKEN} -Pcoverage"
                         }
                     }
                 }
