@@ -9,10 +9,6 @@ pipeline {
         PROJECT_ROOT = 'src'
         EMAIL_ADDRESS = 'mingerez@gmail.com'
         REGISTRY = 'mgerez/ddsdeploy'
-        SONARQUBE_URL = 'http://192.168.68.10:9000'
-        SONAR_TOKEN = 'squ_a7527e83837cbf2cdadd75919d6ee3d7befd320a'
-        // Variable para controlar qué etapas se ejecutan
-        STAGE_TO_RUN = 'ALL' // Cambia a 'CHECKOUT', 'DEPENDENCIES', 'TEST', 'SCAN', 'BUILD' según lo que quieras probar
     }
 
     stages {
