@@ -37,8 +37,6 @@ pipeline {
                     sh "mvn test"
                     // Generar reportes de Surefire en HTML
                     sh "mvn surefire-report:report"
-                    // Generar reportes de Jacoco
-                    sh "mvn jacoco:report"
                 }
             }
         }
