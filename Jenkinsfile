@@ -41,14 +41,31 @@ pipeline {
             }
         }
 
-        stage('Archive Reports') {
+        stage('Publish Test Reports') {
             steps {
                 script {
-                    echo 'Archivando reportes...'
-                    archiveArtifacts artifacts: '**/target/surefire-reports/*.html, **/target/site/jacoco/*.html', allowEmptyArchive: true
+                    echo 'Publicando reportes HTML...'
+                    publishHTML(target: [
+                        reportDir: 'target/site', // Carpeta donde se generan los reportes HTML
+                        reportFiles: 'surefire-report.html', // Archivo del reporte HTML
+                        reportName: 'Surefire Test Report',
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true
+                    ])
+
+                    publishHTML(target: [
+                        reportDir: 'target/site/jacoco', // Carpeta donde se generan los reportes de Jacoco
+                        reportFiles: 'index.html', // Archivo del reporte HTML
+                        reportName: 'Jacoco Coverage Report',
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true
+                    ])
                 }
             }
         }
+
 
 
 
