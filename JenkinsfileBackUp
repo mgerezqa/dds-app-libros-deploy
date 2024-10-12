@@ -60,7 +60,6 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            agent{ label 'minikube'}
             steps {
                     script{
                         echo 'Construyendo la imagen Docker...'
@@ -70,7 +69,6 @@ pipeline {
         }
 
         stage('Deploy Docker Image') {
-            agent{ label 'minikube'}
             steps {
                     script{
                         echo 'Subiendo la imagen a Docker Hub...'
@@ -83,17 +81,6 @@ pipeline {
                         }
                     }
                 }
-        }
-
-        stage('Restart Deployment')
-        {
-            agent{ label 'minikube'}
-            steps {
-                script {
-                    echo 'Reiniciando el deployment...'
-                    sh "kubectl rollout restart deployment javalin-app-libros-dds-deployment"
-                }
-            }
         }
 
     }
