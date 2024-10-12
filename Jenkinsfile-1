@@ -23,6 +23,13 @@ pipeline {
             }
         }
 
+        stage('Dependencies') {
+            steps {
+                echo 'Instalando dependencias...'
+                sh "mvn install -DskipTests"
+            }
+        }
+
         stage('Test') {
             steps {
                 echo 'Ejecutando los tests...'
