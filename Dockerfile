@@ -15,4 +15,8 @@ COPY --from=build /app/target/javalin-deploy-1.0-SNAPSHOT-jar-with-dependencies.
 COPY .env .env
 # ENV PORT=8070
 EXPOSE 8070
+
+# Instalar psql
+RUN apt-get update && apt-get install -y postgresql-client
+
 CMD ["java","-classpath","libros.jar","ar.edu.dds.libros.AppLibros"]
