@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: javalin-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: javalin-app
+  template:
+    metadata:
+      labels:
+        app: javalin-app
+    spec:
+      containers:
+      - name: javalin-app
+        image: mgerez/ddsdeploy:latest
+        ports:
+        - containerPort: 8070
+        env:
+        - name: PORT
+          value: "8070"
+        - name: javax__persistence__jdbc__user
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
+        - name: javax__persistence__jdbc__password
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
+        - name: javax__persistence__jdbc__url
+          value: "jdbc:postgresql://postgres-service:5432/dblibros"
+        - name: javax__persistence__jdbc__driver
+          value: "org.postgresql.Driver"
+        - name: hibernate__hbm2ddl__auto
+          value: "create"
