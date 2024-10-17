@@ -73,16 +73,14 @@ public class AppLibros {
 					URI dbUri = new URI(value);
 					String username = dbUri.getUserInfo().split(":")[0];
 					String password = dbUri.getUserInfo().split(":")[1];
-					//javax.persistence.jdbc.url=jdbc:postgresql://localhost/dblibros
 					value = "jdbc:mysql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();// + "?sslmode=require";
+
 					configOverrides.put("javax.persistence.jdbc.url", value);
 					configOverrides.put("javax.persistence.jdbc.user", username);
 					configOverrides.put("javax.persistence.jdbc.password", password);
 					configOverrides.put("javax.persistence.jdbc.driver", "com.mysql.jdbc.Driver");
-					configOverrides.put("hibernate.hbm2ddl.auto", "update");
 
 
-					//  configOverrides.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 				}
 				// no se pueden poner variables de entorno con "." en la key
 				String key2 = key.replace("__",".");
