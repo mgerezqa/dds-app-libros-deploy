@@ -20,8 +20,8 @@ services:
     environment:
        hibernate__hbm2ddl__auto: create
        javax__persistence__jdbc__driver: org.postgresql.Driver
-       javax__persistence__jdbc__password: 123
        javax__persistence__jdbc__url: jdbc:postgresql://dbservice/dblibros
-       javax__persistence__jdbc__user: postgres
+       javax__persistence__jdbc__password: admin
+       javax__persistence__jdbc__user: admin
     depends_on:
      - dbservice

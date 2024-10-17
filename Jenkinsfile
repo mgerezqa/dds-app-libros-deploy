@@ -106,7 +106,7 @@ pipeline {
                         echo 'Subiendo la imagen a Docker Hub...'
                         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                             // Iniciar sesión en Docker con credenciales enmascaradas
-                            sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}"
+                            sh('docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}')
 
                             // Subir la imagen a Docker Hub
                             sh "docker push ${REGISTRY}:latest"

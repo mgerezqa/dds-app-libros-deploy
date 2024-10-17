@@ -1,0 +1,27 @@
+body {
+    background-color: #f7f7f7;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+    margin-top: 20px;
+}
+/* Añadir estilos personalizados a los botones */
+.custom-button {
+    background: none;
+    color: white;
+    border-radius: 10px; /* Bordes redondeados */
+    font-size: 1.2em; /* Tamaño de fuente más grande */
+    padding: 10px 20px; /* Espaciado interno */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
