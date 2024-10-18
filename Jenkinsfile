@@ -94,6 +94,7 @@ pipeline {
             steps {
                     script{
                         echo 'Construyendo la imagen Docker...'
+                        sh('service docker start')
                         sh "docker build -t ${REGISTRY}:latest ."
                 }
             }
