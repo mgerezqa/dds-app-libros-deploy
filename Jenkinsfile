@@ -123,6 +123,7 @@ pipeline {
                 script {
                     echo 'Reiniciando el deployment...'
                     sh '''
+                    kubectl config use-context minikube
                     minikube kubectl -- rollout restart deployment javalin-app-deployment
                     '''
                 }
