@@ -122,8 +122,10 @@ pipeline {
             steps {
                 script {
                     echo 'Reiniciando el deployment...'
-                    sh('alias kubectl="minikube kubectl --"')
-                    sh('kubectl rollout restart deployment javalin-app-deployment')
+                    sh '''
+                    alias kubectl="minikube kubectl --"
+                    kubectl rollout restart deployment javalin-app-deployment
+                    '''
                 }
             }
         }
