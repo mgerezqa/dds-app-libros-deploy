@@ -121,7 +121,12 @@ pipeline {
             steps {
                 script {
                     echo 'Reiniciando el deployment...'
-                    sh "kubectl rollout restart deployment javalin-app-libros-dds-deployment"
+                    sh('kubectl apply -f postgres-secret.yaml')
+                    sh('kubetcl rollout restart deployment postgres-secret')
+                    sh('kubectl apply -f postgres-deployment.yaml')
+                    sh('kubetcl rollout restart deployment postgres-deployment')
+                    sh('kubectl apply -f javalin-app-deployment.yaml')
+                    sh('kubetcl rollout restart deployment javalin-app-deployment')
                 }
             }
         }
