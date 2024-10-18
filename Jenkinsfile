@@ -122,8 +122,6 @@ pipeline {
             steps {
                 script {
                     echo 'Reiniciando el deployment...'
-                    sh('kubectl rollout restart deployment postgres-secret')
-                    sh('kubectl rollout restart deployment postgres-deployment')
                     sh('kubectl rollout restart deployment javalin-app-deployment')
                 }
             }
