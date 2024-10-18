@@ -122,6 +122,7 @@ pipeline {
             steps {
                 script {
                     echo 'Reiniciando el deployment...'
+                    minikube kubectl -- get po -A
                     sh('kubectl rollout restart deployment javalin-app-deployment')
                 }
             }
