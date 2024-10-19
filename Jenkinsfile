@@ -9,6 +9,8 @@ pipeline {
         PROJECT_ROOT = 'src'
         EMAIL_ADDRESS = 'mingerez@gmail.com'
         REGISTRY = 'mgerez/ddsdeploy'
+        PATH = "/usr/local/bin:${env.PATH}"
+
     }
 
     stages {
@@ -116,22 +118,32 @@ pipeline {
 //                 }
 //         }
 
-        stage('Restart Deployment')
-        {
-            agent{ label 'minikube'}
-            steps {
-                script {
-                    echo 'Reiniciando el deployment...'
-//                     sh '''
-//                     kubectl config use-context minikube
-//                     minikube kubectl -- rollout restart deployment javalin-app
-                        sh "kubectl rollout restart deployment javalin-app"
-//                     '''
-                }
-            }
+    stage('Check PATH') {
+        steps {
+            sh '''
+            echo $PATH
+            which kubectl
+            '''
         }
-
     }
+
+
+//         stage('Restart Deployment')
+//         {
+//             agent{ label 'minikube'}
+//             steps {
+//                 script {
+//                     echo 'Reiniciando el deployment...'
+// //                     sh '''
+// //                     kubectl config use-context minikube
+// //                     minikube kubectl -- rollout restart deployment javalin-app
+//                         sh "kubectl rollout restart deployment javalin-app"
+// //                     '''
+//                 }
+//             }
+//         }
+//
+//     }
 
     post {
         success {
