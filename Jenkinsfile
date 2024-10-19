@@ -89,32 +89,32 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            agent{ label 'minikube'}
-            steps {
-                    script{
-                        echo 'Construyendo la imagen Docker...'
-                        sh('service docker start')
-                        sh "docker build -t ${REGISTRY}:latest ."
-                }
-            }
-        }
-
-        stage('Deploy Docker Image') {
-            agent{ label 'minikube'}
-            steps {
-                    script{
-                        echo 'Subiendo la imagen a Docker Hub...'
-                        withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-                            // Iniciar sesión en Docker con credenciales enmascaradas
-                            sh('docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}')
-
-                            // Subir la imagen a Docker Hub
-                            sh "docker push ${REGISTRY}:latest"
-                        }
-                    }
-                }
-        }
+//         stage('Build Docker Image') {
+//             agent{ label 'minikube'}
+//             steps {
+//                     script{
+//                         echo 'Construyendo la imagen Docker...'
+//                         sh('service docker start')
+//                         sh "docker build -t ${REGISTRY}:latest ."
+//                 }
+//             }
+//         }
+//
+//         stage('Deploy Docker Image') {
+//             agent{ label 'minikube'}
+//             steps {
+//                     script{
+//                         echo 'Subiendo la imagen a Docker Hub...'
+//                         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+//                             // Iniciar sesión en Docker con credenciales enmascaradas
+//                             sh('docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}')
+//
+//                             // Subir la imagen a Docker Hub
+//                             sh "docker push ${REGISTRY}:latest"
+//                         }
+//                     }
+//                 }
+//         }
 
         stage('Restart Deployment')
         {
