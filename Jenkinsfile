@@ -9,7 +9,7 @@ pipeline {
         PROJECT_ROOT = 'src'
         EMAIL_ADDRESS = 'mingerez@gmail.com'
         REGISTRY = 'mgerez/ddsdeploy'
-        PATH = "/usr/local/bin:${env.PATH}"
+        PATH = "/usr/local/bin/kubectl:${env.PATH}"
 
     }
 
