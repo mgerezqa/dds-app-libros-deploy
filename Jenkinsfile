@@ -137,7 +137,7 @@ pipeline {
 //                     sh '''
 //                     kubectl config use-context minikube
 //                     minikube kubectl -- rollout restart deployment javalin-app
-                        sh "kubectl rollout restart deployment javalin-app"
+                        sh "/usr/local/bin/kubectl rollout restart deployment javalin-app"
 //                     '''
                 }
             }
