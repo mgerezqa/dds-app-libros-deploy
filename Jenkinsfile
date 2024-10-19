@@ -41,53 +41,53 @@ pipeline {
             }
         }
 
-        stage('Publish Test Reports') {
-            steps {
-                script {
-                    echo 'Publicando reportes HTML...'
-                    publishHTML(target: [
-                        reportDir: 'target/site', // Carpeta donde se generan los reportes HTML
-                        reportFiles: 'surefire-report.html', // Archivo del reporte HTML
-                        reportName: 'Surefire Test Report',
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true
-                    ])
-
-                    publishHTML(target: [
-                        reportDir: 'target/site/jacoco', // Carpeta donde se generan los reportes de Jacoco
-                        reportFiles: 'index.html', // Archivo del reporte HTML
-                        reportName: 'Jacoco Coverage Report',
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true
-                    ])
-                }
-            }
-        }
-
-
-
-
-        stage('SonarQube Scan') {
-            environment {
-                scannerHome = tool 'sonar-scanner'
-            }
-            steps {
-                script {
-                    echo 'Escaneando el código con SonarQube...'
-                    // Uso de credenciales para obtener la URL de SonarQube y el token
-                    withCredentials([
-                        string(credentialsId: 'sonar-url-credential-jenkinsfile', variable: 'SONARQUBE_URL'),
-                        string(credentialsId: 'sonar-token-credential-jenkinsfile', variable: 'SONAR_TOKEN')
-                    ]) {
-                        withSonarQubeEnv('sonarqube') {
-                            sh('mvn sonar:sonar -Dsonar.projectKey=dds-app-libros-deploy -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONAR_TOKEN} -Pcoverage')
-                        }
-                    }
-                }
-            }
-        }
+//         stage('Publish Test Reports') {
+//             steps {
+//                 script {
+//                     echo 'Publicando reportes HTML...'
+//                     publishHTML(target: [
+//                         reportDir: 'target/site', // Carpeta donde se generan los reportes HTML
+//                         reportFiles: 'surefire-report.html', // Archivo del reporte HTML
+//                         reportName: 'Surefire Test Report',
+//                         allowMissing: false,
+//                         alwaysLinkToLastBuild: true,
+//                         keepAll: true
+//                     ])
+//
+//                     publishHTML(target: [
+//                         reportDir: 'target/site/jacoco', // Carpeta donde se generan los reportes de Jacoco
+//                         reportFiles: 'index.html', // Archivo del reporte HTML
+//                         reportName: 'Jacoco Coverage Report',
+//                         allowMissing: false,
+//                         alwaysLinkToLastBuild: true,
+//                         keepAll: true
+//                     ])
+//                 }
+//             }
+//         }
+//
+//
+//
+//
+//         stage('SonarQube Scan') {
+//             environment {
+//                 scannerHome = tool 'sonar-scanner'
+//             }
+//             steps {
+//                 script {
+//                     echo 'Escaneando el código con SonarQube...'
+//                     // Uso de credenciales para obtener la URL de SonarQube y el token
+//                     withCredentials([
+//                         string(credentialsId: 'sonar-url-credential-jenkinsfile', variable: 'SONARQUBE_URL'),
+//                         string(credentialsId: 'sonar-token-credential-jenkinsfile', variable: 'SONAR_TOKEN')
+//                     ]) {
+//                         withSonarQubeEnv('sonarqube') {
+//                             sh('mvn sonar:sonar -Dsonar.projectKey=dds-app-libros-deploy -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONAR_TOKEN} -Pcoverage')
+//                         }
+//                     }
+//                 }
+//             }
+//         }
 
 //         stage('Build Docker Image') {
 //             agent{ label 'minikube'}
