@@ -118,13 +118,15 @@ pipeline {
 //                 }
 //         }
 
-    stage('Check PATH') {
-        steps {
-            sh '''
-            echo $PATH
-            which kubectl
-            '''
-        }
+    stage('Check PATH')
+    {
+        agent {label 'minikube'}
+            steps {
+                sh '''
+                echo $PATH
+                which kubectl
+                '''
+            }
     }
 
 
