@@ -128,22 +128,22 @@ pipeline {
     }
 
 
-//         stage('Restart Deployment')
-//         {
-//             agent{ label 'minikube'}
-//             steps {
-//                 script {
-//                     echo 'Reiniciando el deployment...'
-// //                     sh '''
-// //                     kubectl config use-context minikube
-// //                     minikube kubectl -- rollout restart deployment javalin-app
-//                         sh "kubectl rollout restart deployment javalin-app"
-// //                     '''
-//                 }
-//             }
-//         }
-//
-//     }
+        stage('Restart Deployment')
+        {
+            agent{ label 'minikube'}
+            steps {
+                script {
+                    echo 'Reiniciando el deployment...'
+//                     sh '''
+//                     kubectl config use-context minikube
+//                     minikube kubectl -- rollout restart deployment javalin-app
+                        sh "kubectl rollout restart deployment javalin-app"
+//                     '''
+                }
+            }
+        }
+
+    }
 
     post {
         success {
