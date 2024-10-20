@@ -10,6 +10,7 @@ pipeline {
         EMAIL_ADDRESS = 'mingerez@gmail.com'
         REGISTRY = 'mgerez/ddsdeploy'
         KUBECONFIG = '/home/padawan/kubectl_config_agent'
+
     }
 
     stages {
@@ -118,36 +119,50 @@ pipeline {
 //         }
 
 
-        stage('Check KUBECONFIG') {
+//         stage('Check KUBECONFIG') {
+//             steps {
+//                 script {
+//                     // Verificar la variable de entorno KUBECONFIG
+//                     echo "Current KUBECONFIG: ${env.KUBECONFIG}"
+//
+//                     // Verificar conexión al clúster
+//                     sh 'kubectl cluster-info || { echo "Failed to connect to the cluster."; exit 1; }'
+//
+//                     // Listar los contextos disponibles
+//                     sh 'kubectl config get-contexts'
+//
+//                     // Verificar el estado de minikube
+//                     sh 'minikube status || { echo "Minikube is not running."; exit 1; }'
+//                 }
+//             }
+//         }
+
+
+
+//         stage('Restart Deployment')
+//         {
+//             agent{ label 'minikube'}
+//             steps {
+//                 script {
+//                     echo 'Reiniciando el deployment...'
+//                     sh '''
+//                     kubectl -- config use-context minikube
+//                     kubectl -- rollout restart deployment javalin-app
+//                     '''
+//                 }
+//             }
+//         }
+
+
+        stage('Deploy to Kubernetes') {
             steps {
-                script {
-                    // Verificar la variable de entorno KUBECONFIG
-                    echo "Current KUBECONFIG: ${env.KUBECONFIG}"
+                 withCredentials([
+                    string(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')
+                ]) {
+                    script {
+                    withKubeConfig([credentialsId: 'kubeconfig']) {
+                    sh "kubectl rollout restart deployment javalin-app"
 
-                    // Verificar conexión al clúster
-                    sh 'kubectl cluster-info || { echo "Failed to connect to the cluster."; exit 1; }'
-
-                    // Listar los contextos disponibles
-                    sh 'kubectl config get-contexts'
-
-                    // Verificar el estado de minikube
-                    sh 'minikube status || { echo "Minikube is not running."; exit 1; }'
-                }
-            }
-        }
-
-
-
-        stage('Restart Deployment')
-        {
-            agent{ label 'minikube'}
-            steps {
-                script {
-                    echo 'Reiniciando el deployment...'
-                    sh '''
-                    kubectl -- config use-context minikube
-                    kubectl -- rollout restart deployment javalin-app
-                    '''
                 }
             }
         }
