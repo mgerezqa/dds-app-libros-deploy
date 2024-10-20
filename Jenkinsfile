@@ -155,7 +155,8 @@ pipeline {
                 ]) {
                     script {
                         echo 'Desplegando la aplicación en Kubernetes...'
-                        kubeDeploy("${REGISTRY},ddsdeploy")
+                        kubectl config use-context minikube
+                        kubectl rollout restart deployment javalin-app
                     }
                 }
             }
