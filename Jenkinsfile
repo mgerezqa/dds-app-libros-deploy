@@ -123,8 +123,9 @@ pipeline {
                     // Verificar la variable de entorno KUBECONFIG
                     echo "Current KUBECONFIG: ${env.KUBECONFIG}"
 
-                    // Verificar conexión al clúster
-//                     sh 'kubectl cluster-info || { echo "Failed to connect to the cluster."; exit 1; }'
+                    sh 'kubectl version --client'
+                    sh 'minikube version'
+                    sh 'minikube start'
 
                     // Listar los contextos disponibles
                     sh 'kubectl config get-contexts'
