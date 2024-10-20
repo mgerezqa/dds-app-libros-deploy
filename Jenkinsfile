@@ -118,6 +118,7 @@ pipeline {
         }
 //
 //         stage('Check KUBECONFIG') {
+//             agent { label 'minikube' }
 //             steps {
 //                 script {
 //                     // Verificar la variable de entorno KUBECONFIG
@@ -134,36 +135,36 @@ pipeline {
 //                 }
 //             }
 //         }
-//
-//         stage('Restart Deployment') {
-//             agent { label 'minikube' }
-//             steps {
-//                 script {
-//                     echo 'Reiniciando el deployment...'
-//                     sh '''
-//                     kubectl config use-context minikube
-//                     kubectl rollout restart deployment javalin-app
-//                     '''
-//                 }
-//             }
-//         }
 
-        stage('Deploy to Kubernetes') {
+        stage('Restart Deployment') {
+            agent { label 'minikube' }
             steps {
-                withCredentials([
-                    string(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')
-                ]) {
-                    script {
-                        echo 'Desplegando la aplicación en Kubernetes...'
-                        sh '''
-                        export PATH=$PATH:${MINIKUBE_PATH}
-                        ${MINIKUBE_PATH}/minikube kubectl config use-context minikube
-                        ${MINIKUBE_PATH}/minikube kubectl rollout restart deployment javalin-app
-                        '''
-                    }
+                script {
+                    echo 'Reiniciando el deployment...'
+                    sh '''
+                    kubectl config use-context minikube
+                    kubectl rollout restart deployment javalin-app
+                    '''
                 }
             }
         }
+
+//         stage('Deploy to Kubernetes') {
+//             steps {
+//                 withCredentials([
+//                     string(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')
+//                 ]) {
+//                     script {
+//                         echo 'Desplegando la aplicación en Kubernetes...'
+//                         sh '''
+//                         export PATH=$PATH:${MINIKUBE_PATH}
+//                         ${MINIKUBE_PATH}/minikube kubectl config use-context minikube
+//                         ${MINIKUBE_PATH}/minikube kubectl rollout restart deployment javalin-app
+//                         '''
+//                     }
+//                 }
+//             }
+//         }
     }
 
     post {
