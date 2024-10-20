@@ -155,8 +155,10 @@ pipeline {
                 ]) {
                     script {
                         echo 'Desplegando la aplicación en Kubernetes...'
-                        kubectl config use-context minikube
-                        kubectl rollout restart deployment javalin-app
+                    sh '''
+                    kubectl config use-context minikube
+                    kubectl rollout restart deployment javalin-app
+                    '''
                     }
                 }
             }
