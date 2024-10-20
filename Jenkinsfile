@@ -153,19 +153,21 @@ pipeline {
 //             }
 //         }
 
-
-        stage('Deploy to Kubernetes') {
-            steps {
-                 withCredentials([
-                    string(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')
-                ]) {
-                    script {
-                        withKubeConfig([credentialsId: 'kubeconfig']) {
+    stage('Deploy to Kubernetes') {
+        steps {
+            withCredentials([
+                string(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')
+            ]) {
+                script {
+                    withKubeConfig([credentialsId: 'kubeconfig']) {
                         sh "kubectl rollout restart deployment javalin-app"
-                        }
                     }
+                }
             }
         }
+    }
+
+
 
     }
 
