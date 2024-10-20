@@ -9,28 +9,31 @@ pipeline {
         PROJECT_ROOT = 'src'
         EMAIL_ADDRESS = 'mingerez@gmail.com'
         REGISTRY = 'mgerez/ddsdeploy'
-//         KUBECONFIG = '/home/padawan/kubectl_config_agent'
-
+        // KUBECONFIG = '/home/padawan/kubectl_config_agent'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                    script {
-                            echo 'Realizando checkout del repositorio...'
-                            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mgerezqa/dds-app-libros-deploy.git']]])
-                    }
+                script {
+                    echo 'Realizando checkout del repositorio...'
+                    checkout([$class: 'GitSCM',
+                        branches: [[name: '*/main']],
+                        extensions: [],
+                        userRemoteConfigs: [[url: 'https://github.com/mgerezqa/dds-app-libros-deploy.git']]
+                    ])
+                }
             }
         }
 
-//         stage('Dependencies') {
-//             steps {
-//                     script {
-//                                 echo 'Instalando dependencias...'
-//                                 sh "mvn install -DskipTests"
-//                     }
-//             }
-//         }
+        stage('Dependencies') {
+            steps {
+                script {
+                    echo 'Instalando dependencias...'
+                    sh "mvn install -DskipTests"
+                }
+            }
+        }
 
 //         stage('Test') {
 //             steps {
@@ -42,14 +45,14 @@ pipeline {
 //                 }
 //             }
 //         }
-
+//
 //         stage('Publish Test Reports') {
 //             steps {
 //                 script {
 //                     echo 'Publicando reportes HTML...'
 //                     publishHTML(target: [
-//                         reportDir: 'target/site', // Carpeta donde se generan los reportes HTML
-//                         reportFiles: 'surefire-report.html', // Archivo del reporte HTML
+//                         reportDir: 'target/site',
+//                         reportFiles: 'surefire-report.html',
 //                         reportName: 'Surefire Test Report',
 //                         allowMissing: false,
 //                         alwaysLinkToLastBuild: true,
@@ -57,8 +60,8 @@ pipeline {
 //                     ])
 //
 //                     publishHTML(target: [
-//                         reportDir: 'target/site/jacoco', // Carpeta donde se generan los reportes de Jacoco
-//                         reportFiles: 'index.html', // Archivo del reporte HTML
+//                         reportDir: 'target/site/jacoco',
+//                         reportFiles: 'index.html',
 //                         reportName: 'Jacoco Coverage Report',
 //                         allowMissing: false,
 //                         alwaysLinkToLastBuild: true,
@@ -68,9 +71,6 @@ pipeline {
 //             }
 //         }
 //
-//
-//
-//
 //         stage('SonarQube Scan') {
 //             environment {
 //                 scannerHome = tool 'sonar-scanner'
@@ -78,7 +78,6 @@ pipeline {
 //             steps {
 //                 script {
 //                     echo 'Escaneando el código con SonarQube...'
-//                     // Uso de credenciales para obtener la URL de SonarQube y el token
 //                     withCredentials([
 //                         string(credentialsId: 'sonar-url-credential-jenkinsfile', variable: 'SONARQUBE_URL'),
 //                         string(credentialsId: 'sonar-token-credential-jenkinsfile', variable: 'SONAR_TOKEN')
@@ -90,35 +89,34 @@ pipeline {
 //                 }
 //             }
 //         }
-
+//
 //         stage('Build Docker Image') {
-//             agent{ label 'minikube'}
+//             agent { label 'minikube' }
 //             steps {
-//                     script{
-//                         echo 'Construyendo la imagen Docker...'
-//                         sh('service docker start')
-//                         sh "docker build -t ${REGISTRY}:latest ."
+//                 script {
+//                     echo 'Construyendo la imagen Docker...'
+//                     sh('service docker start')
+//                     sh "docker build -t ${REGISTRY}:latest ."
 //                 }
 //             }
 //         }
 //
 //         stage('Deploy Docker Image') {
-//             agent{ label 'minikube'}
+//             agent { label 'minikube' }
 //             steps {
-//                     script{
-//                         echo 'Subiendo la imagen a Docker Hub...'
-//                         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-//                             // Iniciar sesión en Docker con credenciales enmascaradas
-//                             sh('docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}')
+//                 script {
+//                     echo 'Subiendo la imagen a Docker Hub...'
+//                     withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+//                         // Iniciar sesión en Docker con credenciales enmascaradas
+//                         sh('docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}')
 //
-//                             // Subir la imagen a Docker Hub
-//                             sh "docker push ${REGISTRY}:latest"
-//                         }
+//                         // Subir la imagen a Docker Hub
+//                         sh "docker push ${REGISTRY}:latest"
 //                     }
 //                 }
+//             }
 //         }
-
-
+//
 //         stage('Check KUBECONFIG') {
 //             steps {
 //                 script {
@@ -136,39 +134,32 @@ pipeline {
 //                 }
 //             }
 //         }
-
-
-
-//         stage('Restart Deployment')
-//         {
-//             agent{ label 'minikube'}
+//
+//         stage('Restart Deployment') {
+//             agent { label 'minikube' }
 //             steps {
 //                 script {
 //                     echo 'Reiniciando el deployment...'
 //                     sh '''
-//                     kubectl -- config use-context minikube
-//                     kubectl -- rollout restart deployment javalin-app
+//                     kubectl config use-context minikube
+//                     kubectl rollout restart deployment javalin-app
 //                     '''
 //                 }
 //             }
 //         }
 
-    stage('Deploy to Kubernetes') {
-        steps {
-            withCredentials([
-                string(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')
-            ]) {
-                script {
-                    echo 'Desplegando la aplicación en Kubernetes...'
-                    kubeDeploy("${REGISTRY}","ddsdeploy")
+        stage('Deploy to Kubernetes') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')
+                ]) {
+                    script {
+                        echo 'Desplegando la aplicación en Kubernetes...'
+                        kubeDeploy("${REGISTRY},ddsdeploy")
                     }
                 }
             }
         }
-    }
-
-
-
     }
 
     post {
