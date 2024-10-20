@@ -124,7 +124,7 @@ pipeline {
                     echo "Current KUBECONFIG: ${env.KUBECONFIG}"
 
                     // Verificar conexión al clúster
-                    sh 'kubectl cluster-info || { echo "Failed to connect to the cluster."; exit 1; }'
+//                     sh 'kubectl cluster-info || { echo "Failed to connect to the cluster."; exit 1; }'
 
                     // Listar los contextos disponibles
                     sh 'kubectl config get-contexts'
