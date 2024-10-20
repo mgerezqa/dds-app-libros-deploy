@@ -35,87 +35,87 @@ pipeline {
             }
         }
 
-//         stage('Test') {
-//             steps {
-//                 script {
-//                     echo 'Ejecutando los tests...'
-//                     sh "mvn test"
-//                     // Generar reportes de Surefire en HTML
-//                     sh "mvn surefire-report:report"
-//                 }
-//             }
-//         }
-//
-//         stage('Publish Test Reports') {
-//             steps {
-//                 script {
-//                     echo 'Publicando reportes HTML...'
-//                     publishHTML(target: [
-//                         reportDir: 'target/site',
-//                         reportFiles: 'surefire-report.html',
-//                         reportName: 'Surefire Test Report',
-//                         allowMissing: false,
-//                         alwaysLinkToLastBuild: true,
-//                         keepAll: true
-//                     ])
-//
-//                     publishHTML(target: [
-//                         reportDir: 'target/site/jacoco',
-//                         reportFiles: 'index.html',
-//                         reportName: 'Jacoco Coverage Report',
-//                         allowMissing: false,
-//                         alwaysLinkToLastBuild: true,
-//                         keepAll: true
-//                     ])
-//                 }
-//             }
-//         }
-//
-//         stage('SonarQube Scan') {
-//             environment {
-//                 scannerHome = tool 'sonar-scanner'
-//             }
-//             steps {
-//                 script {
-//                     echo 'Escaneando el código con SonarQube...'
-//                     withCredentials([
-//                         string(credentialsId: 'sonar-url-credential-jenkinsfile', variable: 'SONARQUBE_URL'),
-//                         string(credentialsId: 'sonar-token-credential-jenkinsfile', variable: 'SONAR_TOKEN')
-//                     ]) {
-//                         withSonarQubeEnv('sonarqube') {
-//                             sh('mvn sonar:sonar -Dsonar.projectKey=dds-app-libros-deploy -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONAR_TOKEN} -Pcoverage')
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//
-//         stage('Build Docker Image') {
-//             agent { label 'minikube' }
-//             steps {
-//                 script {
-//                     echo 'Construyendo la imagen Docker...'
-//                     sh('service docker start')
-//                     sh "docker build -t ${REGISTRY}:latest ."
-//                 }
-//             }
-//         }
-//
-//         stage('Deploy Docker Image') {
-//             agent { label 'minikube' }
-//             steps {
-//                 script {
-//                     echo 'Subiendo la imagen a Docker Hub...'
-//                     withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-//                         // Iniciar sesión en Docker con credenciales enmascaradas
-//                         sh('docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}')
-//
-//                         // Subir la imagen a Docker Hub
-//                         sh "docker push ${REGISTRY}:latest"
-//                     }
-//                 }
-//             }
-//         }
+        stage('Test') {
+            steps {
+                script {
+                    echo 'Ejecutando los tests...'
+                    sh "mvn test"
+                    // Generar reportes de Surefire en HTML
+                    sh "mvn surefire-report:report"
+                }
+            }
+        }
+
+        stage('Publish Test Reports') {
+            steps {
+                script {
+                    echo 'Publicando reportes HTML...'
+                    publishHTML(target: [
+                        reportDir: 'target/site',
+                        reportFiles: 'surefire-report.html',
+                        reportName: 'Surefire Test Report',
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true
+                    ])
+
+                    publishHTML(target: [
+                        reportDir: 'target/site/jacoco',
+                        reportFiles: 'index.html',
+                        reportName: 'Jacoco Coverage Report',
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true
+                    ])
+                }
+            }
+        }
+
+        stage('SonarQube Scan') {
+            environment {
+                scannerHome = tool 'sonar-scanner'
+            }
+            steps {
+                script {
+                    echo 'Escaneando el código con SonarQube...'
+                    withCredentials([
+                        string(credentialsId: 'sonar-url-credential-jenkinsfile', variable: 'SONARQUBE_URL'),
+                        string(credentialsId: 'sonar-token-credential-jenkinsfile', variable: 'SONAR_TOKEN')
+                    ]) {
+                        withSonarQubeEnv('sonarqube') {
+                            sh('mvn sonar:sonar -Dsonar.projectKey=dds-app-libros-deploy -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONAR_TOKEN} -Pcoverage')
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            agent { label 'minikube' }
+            steps {
+                script {
+                    echo 'Construyendo la imagen Docker...'
+                    sh('service docker start')
+                    sh "docker build -t ${REGISTRY}:latest ."
+                }
+            }
+        }
+
+        stage('Deploy Docker Image') {
+            agent { label 'minikube' }
+            steps {
+                script {
+                    echo 'Subiendo la imagen a Docker Hub...'
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        // Iniciar sesión en Docker con credenciales enmascaradas
+                        sh('docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}')
+
+                        // Subir la imagen a Docker Hub
+                        sh "docker push ${REGISTRY}:latest"
+                    }
+                }
+            }
+        }
 //
 //         stage('Check KUBECONFIG') {
 //             steps {
