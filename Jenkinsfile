@@ -117,24 +117,25 @@ pipeline {
 //                 }
 //         }
 
-        stages {
-            stage('Check KUBECONFIG') {
-                steps {
-                    script {
-                        // Verificar la variable de entorno KUBECONFIG
-                        echo "Current KUBECONFIG: ${env.KUBECONFIG}"
 
-                        // Verificar conexión al clúster
-                        sh 'kubectl cluster-info || { echo "Failed to connect to the cluster."; exit 1; }'
+        stage('Check KUBECONFIG') {
+            steps {
+                script {
+                    // Verificar la variable de entorno KUBECONFIG
+                    echo "Current KUBECONFIG: ${env.KUBECONFIG}"
 
-                        // Listar los contextos disponibles
-                        sh 'kubectl config get-contexts'
+                    // Verificar conexión al clúster
+                    sh 'kubectl cluster-info || { echo "Failed to connect to the cluster."; exit 1; }'
 
-                        // Verificar el estado de minikube
-                        sh 'minikube status || { echo "Minikube is not running."; exit 1; }'
-                    }
+                    // Listar los contextos disponibles
+                    sh 'kubectl config get-contexts'
+
+                    // Verificar el estado de minikube
+                    sh 'minikube status || { echo "Minikube is not running."; exit 1; }'
                 }
             }
+        }
+
 
 
         stage('Restart Deployment')
