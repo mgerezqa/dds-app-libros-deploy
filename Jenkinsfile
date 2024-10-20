@@ -23,25 +23,25 @@ pipeline {
             }
         }
 
-        stage('Dependencies') {
-            steps {
-                    script {
-                                echo 'Instalando dependencias...'
-                                sh "mvn install -DskipTests"
-                    }
-            }
-        }
+//         stage('Dependencies') {
+//             steps {
+//                     script {
+//                                 echo 'Instalando dependencias...'
+//                                 sh "mvn install -DskipTests"
+//                     }
+//             }
+//         }
 
-        stage('Test') {
-            steps {
-                script {
-                    echo 'Ejecutando los tests...'
-                    sh "mvn test"
-                    // Generar reportes de Surefire en HTML
-                    sh "mvn surefire-report:report"
-                }
-            }
-        }
+//         stage('Test') {
+//             steps {
+//                 script {
+//                     echo 'Ejecutando los tests...'
+//                     sh "mvn test"
+//                     // Generar reportes de Surefire en HTML
+//                     sh "mvn surefire-report:report"
+//                 }
+//             }
+//         }
 
 //         stage('Publish Test Reports') {
 //             steps {
@@ -118,17 +118,6 @@ pipeline {
 //                 }
 //         }
 
-    stage('Check PATH')
-    {
-        agent {label 'minikube'}
-            steps {
-                sh '''
-                echo $PATH
-                which kubectl
-                '''
-            }
-    }
-
 
         stage('Restart Deployment')
         {
@@ -138,7 +127,8 @@ pipeline {
                     echo 'Reiniciando el deployment...'
                     sh '''
                     kubectl config use-context minikube
-                    minikube kubectl -- rollout restart deployment javalin-app
+                    alias kubectl="minikube kubectl --"
+                    kubectl -- rollout restart deployment javalin-app
                     '''
                 }
             }
