@@ -160,10 +160,10 @@ pipeline {
                     string(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')
                 ]) {
                     script {
-                    withKubeConfig([credentialsId: 'kubeconfig']) {
-                    sh "kubectl rollout restart deployment javalin-app"
-
-                }
+                        withKubeConfig([credentialsId: 'kubeconfig']) {
+                        sh "kubectl rollout restart deployment javalin-app"
+                        }
+                    }
             }
         }
 
