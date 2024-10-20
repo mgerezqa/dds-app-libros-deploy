@@ -156,8 +156,9 @@ pipeline {
                     script {
                         echo 'Desplegando la aplicación en Kubernetes...'
                         sh '''
-                        /usr/local/bin/minikube  kubectl config use-context minikube
-                        /usr/local/bin/minikube  kubectl rollout restart deployment javalin-app
+                        export PATH=$PATH:${MINIKUBE_PATH}
+                        minikube kubectl config use-context minikube
+                        minikube kubectl rollout restart deployment javalin-app
                         '''
                     }
                 }
