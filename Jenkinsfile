@@ -160,7 +160,7 @@ pipeline {
             ]) {
                 script {
                     echo 'Desplegando la aplicación en Kubernetes...'
-                    kubeDeploy("${REGISTRY}," + "ddsdeploy")
+                    kubeDeploy("${REGISTRY}","ddsdeploy")
                     }
                 }
             }
