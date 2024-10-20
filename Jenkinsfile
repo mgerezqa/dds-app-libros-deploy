@@ -9,7 +9,7 @@ pipeline {
         PROJECT_ROOT = 'src'
         EMAIL_ADDRESS = 'mingerez@gmail.com'
         REGISTRY = 'mgerez/ddsdeploy'
-        KUBECONFIG = '/home/padawan/kubectl_config_agent'
+//         KUBECONFIG = '/home/padawan/kubectl_config_agent'
 
     }
 
