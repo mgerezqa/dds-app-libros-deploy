@@ -154,7 +154,6 @@ pipeline {
                     string(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')
                 ]) {
                     script {
-                        export KUBEPATH=$PATH:/usr/local/bin/minikube
                         echo 'Desplegando la aplicación en Kubernetes...'
                         sh '''
                         export PATH=$PATH:/usr/local/bin/
