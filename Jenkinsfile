@@ -126,8 +126,8 @@ pipeline {
                 script {
                     echo 'Reiniciando el deployment...'
                     sh '''
-                    kubectl config use-context minikube
                     alias kubectl="minikube kubectl --"
+                    kubectl config use-context minikube
                     kubectl -- rollout restart deployment javalin-app
                     '''
                 }
