@@ -9,7 +9,6 @@ pipeline {
         PROJECT_ROOT = 'src'
         EMAIL_ADDRESS = 'mingerez@gmail.com'
         REGISTRY = 'mgerez/ddsdeploy'
-//         KUBEPATH = '/home/padawan/kubectl_config_agent'
     }
 
     stages {
@@ -141,32 +140,13 @@ pipeline {
             steps {
                 script {
                     echo 'Reiniciando el deployment...'
-//                     sh '''
-//                     kubectl config use-context minikube
-//                     kubectl rollout restart deployment javalin-app
-//                     '''
                     sh 'kubectl rollout restart deployment javalin-app'
 
                 }
             }
         }
 
-//         stage('Deploy to Kubernetes') {
-//             steps {
-//                 withCredentials([
-//                     string(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')
-//                 ]) {
-//                     script {
-//                         echo 'Desplegando la aplicación en Kubernetes...'
-//                         sh '''
-//                         export PATH=$PATH:${MINIKUBE_PATH}
-//                         ${MINIKUBE_PATH}/minikube kubectl config use-context minikube
-//                         ${MINIKUBE_PATH}/minikube kubectl rollout restart deployment javalin-app
-//                         '''
-//                     }
-//                 }
-//             }
-//         }
+
     }
 
     post {
