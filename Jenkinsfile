@@ -142,7 +142,7 @@ pipeline {
                             echo 'Desplegando app...'
                             sh 'kubectl apply -f postgres-secret.yaml'
                             sh 'kubectl apply -f postgres-deployment.yaml'
-                            sh 'apply -f javalin-app-deployment.yaml'
+                            sh 'kubectl apply -f javalin-app-deployment.yaml'
                         }
                     }
         }
