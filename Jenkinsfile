@@ -135,6 +135,18 @@ pipeline {
             }
         }
 
+        stage('Deployment'){
+            agent { label 'minikube' }
+                    steps {
+                        script {
+                            echo 'Desplegando app...'
+                            sh 'kubectl apply -f postgres-secret.yaml'
+                            sh 'kubectl apply -f postgres-deployment.yaml'
+                            sh 'apply -f javalin-app-deployment.yaml'
+                        }
+                    }
+        }
+
         stage('Restart Deployment') {
             agent { label 'minikube' }
             steps {
